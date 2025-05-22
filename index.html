@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识卡片</title>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>操作系统备考</h1>
+    </header>
+
+    <div class="card-container">
+        <div class="card">
+            <h2 id="card-title">卡片标题</h2>
+            <p id="card-content">卡片内容</p>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button id="next-button">下一张卡片</button>
+    </div>
+
+    <script>
+        const nextButton = document.getElementById('next-button');
+        const cardTitle = document.getElementById('card-title');
+        const cardContent = document.getElementById('card-content');
+        let currentCardId = null;  // 用于存储当前卡片的ID
+
+        // 获取新的卡片并更新内容
+        function loadRandomCard() {
+            const requestPayload = currentCardId ? { currentCardId: currentCardId } : {};
+
+            fetch('/random-card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestPayload)  // 发送当前卡片 ID
+            })
+            .then(response => response.json())
+            .then(card => {
+                currentCardId = card.id;  // 更新当前卡片 ID
+                cardTitle.textContent = card.title;
+                cardContent.textContent = card.content;
+            })
+            .catch(error => {
+                console.error("Error fetching new card:", error);
+            });
+        }
+
+        // 初始化加载卡片
+        loadRandomCard();
+
+        // 按钮点击加载下一张卡片
+        nextButton.addEventListener('click', loadRandomCard);
+    </script>
+</body>
+
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #6e7bff, #5f53e2);
+        flex-direction: column;
+        padding: 0 20px;
+        color: #fff;
+    }
+
+    /* Header Styles */
+    header {
+        width: 100%;
+        text-align: center;
+        background-color: #4a44c3;  /* Darker shade of purple */
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2.8em;
+        font-weight: 600;
+        letter-spacing: 2px;
+    }
+
+    /* Card Container */
+    .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-grow: 1;
+        width: 100%;
+        max-width: 480px;  /* Increased max width */
+    }
+
+    /* Card Styles */
+    .card {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 420px;
+        transition: transform 0.3s ease-in-out, max-height 0.5s ease-in-out;
+        box-sizing: border-box;
+        color: #333;
+        max-height: 700px; /* Allow it to grow with content */
+        overflow: hidden;
+    }
+
+    /* Title Styles */
+    .card h2 {
+        font-size: 2em;
+        margin-bottom: 15px;
+        color: #3c3c3c;
+        font-weight: 700;
+    }
+
+    /* Content Styles */
+    .card p {
+        font-size: 1.2em;
+        color: #5a5a5a;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    /* Button Container */
+    .button-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    /* Next Button Styles */
+    #next-button {
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #6e7bff, #5f53e2);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.3em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s, box-shadow 0.2s;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 380px;
+    }
+
+    /* Button Hover Effect */
+    #next-button:hover {
+        background: linear-gradient(135deg, #5f53e2, #6e7bff);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Button Active Effect */
+    #next-button:active {
+        transform: translateY(2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+</html>
