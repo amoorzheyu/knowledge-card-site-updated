@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.set('trust proxy', true);
 const path = require('path');
 const fs = require('fs');
 
@@ -34,8 +35,8 @@ app.use((req, res, next) => {
     const ip = req.ip;
 
     // 黑名单拦截
-    if (blacklist.has(ip)) {
-        return res.status(403).json({ error: 'Your IP is blacklisted due to too many requests.' });
+     if (blacklist.has(ip)) {
+        return res.status(403).sendFile(path.join(__dirname, 'forbidden.html'));
     }
 
     const now = Date.now();
@@ -145,6 +146,7 @@ app.get('/', (req, res) => {
 });
 
 // ====== 启动服务器 ======
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+app.listen(3002, () => {
+    console.log('main Server is running on http://localhost:3002');
+    console.log('admin  Server is running on http://localhost:3002/admin');
 });
